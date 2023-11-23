@@ -1,0 +1,2 @@
+#!/bin/bash
+xrandr --output HDMI1  --auto --output eDP1 --primary --right-of HDMI1

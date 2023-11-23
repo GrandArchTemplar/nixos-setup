@@ -1,0 +1,59 @@
+Config 
+  { font = "xft:Symbols Nerd Font:size=10,  Bitstream Vera Sans Mono:size=8:bold:antialias=true:hinting=true"
+  , borderColor = "black"
+  , border = TopB
+  , bgColor = "black"
+  , fgColor = "grey"
+  , position = TopW L 100
+  , allDesktops = True
+  , pickBroadest = False
+  , commands = 
+    [ Run Battery                   [ "-t", "<acstatus> <left>% - <timeleft>"
+                                    , "--"
+                                    , "-O", "AC"
+                                    , "-o", "Bat"
+                                    , "-L", "20"
+                                    , "-l", "red"
+                                    , "-H", "80"
+                                    , "-h", "green"
+                                    , "-m", "white"
+                                    ] 10
+    , Run Weather "ULLI"            [ "-t", "<tempC>C"
+                                    , "-L", "18"
+                                    , "-H", "25"
+                                    , "-n", "green"
+                                    , "-h" , "red"
+                                    , "-l" ,"lightblue"
+                                    ] 36000
+    , Run Wireless "wlp0s20f3"      [ "-t", "Wi-Fi: <essid> <quality>"
+                                    , "-L", "50"
+                                    , "-H", "75"
+                                    , "-l", "red"
+                                    , "-n", "yellow"
+                                    , "-h", "green"
+                                    ] 10
+    , Run Cpu                       [ "-L", "3"
+                                    , "-H", "50"
+                                    , "-n", "green"
+                                    , "-h", "red"
+                                    ] 10
+    , Run Memory                    [ "-t", "Mem: <usedratio>%"
+                                    , "-L", "40"
+                                    , "-H", "80"
+                                    , "-n", "green"
+                                    , "-h", "red"
+                                    ] 10
+    , Run Swap                      [
+                                    ] 10
+    , Run Com "uname"               ["-s"
+                                    ,"-r"
+                                    ] "" 36000
+    , Run Volume "default" "Master" [ "-t", "<volumebar><status>"
+                                    ] 10
+    , Run Date "%a %Y %b %_d %H:%M:%S" "date" 10
+    , Run StdinReader
+    ]
+  , sepChar = "%"
+  , alignSep = "}{"
+  , template = "%StdinReader% | %cpu% | %memory% * %swap% | %wlp0s20f3wi% }{ %default:Master%| %battery% | <fc=#ee9a00>%date%</fc> | %uname% | %ULLI% "
+  }
