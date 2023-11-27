@@ -22,5 +22,5 @@ myKeys =
   , ((controlMask .|. mod4Mask , xK_l), spawn lockscreen)
   ]
 
-lockscreen = "i3lock -c 181818 -e -k --time-color=cfcfcf --date-color=cfcfcf"
+lockscreen = "i3lock-color -c 181818 -e -k --time-color=cfcfcf --date-color=cfcfcf"
 keyboard_switch = "~/.config/xmonad/keyboard_switch.sh"
