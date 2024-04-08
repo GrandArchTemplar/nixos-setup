@@ -1,35 +1,25 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
     ];
-
-  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
   networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
   networking.networkmanager.enable = true;
-
-  # Set your time zone.
   time.timeZone = "Europe/Moscow";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
+  fonts.packages = with pkgs; [
+    fira-code
+    fira-code-symbols
+    nerdfonts
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+  ];
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "ru_RU.UTF-8";
     LC_IDENTIFICATION = "ru_RU.UTF-8";
@@ -41,13 +31,12 @@
     LC_TELEPHONE = "ru_RU.UTF-8";
     LC_TIME = "ru_RU.UTF-8";
   };
-
-  sound.enable = true;
-  # Configure keymap in X11
   services.xserver = {
-    layout = "us,ru";
-    xkbVariant = "";
-    xkbOptions = "grp:alt_shift_toggle";
+    xkb = {
+      layout = "us,ru";
+      variant = "";
+      options = "grp:alt_shift_toggle";
+    };
     enable = true;
     windowManager = {
       xmonad.enable = true;
@@ -58,45 +47,91 @@
         hpkgs.xmonad
       ];
     };
+    desktopManager = {
+      xterm.enable = false;
+    };
     displayManager = {
-#      startx.enable = true;
       defaultSession = "none+xmonad";
     };
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  services.logind.extraConfig = ''
+    HandlePowerKey=ignore
+    HandleSuspendKey=ignore
+    HandleHibernateKey=ignore
+  '';
   users = {
     defaultUserShell = pkgs.zsh;
     users.archgt = {
       isNormalUser = true;
       description = "archgt";
       extraGroups = [ "networkmanager" "wheel" ];
-      packages = with pkgs; [];
+      packages = with pkgs; [ ];
     };
   };
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-    git
-    google-chrome
-    vscode
-    dmenu
-    haskellPackages.xmobar
-    alacritty
-    openjdk
-    telegram-desktop
-    screenfetch
-    agda
-    zsh
-    # i3lock
-    i3lock-color
-    leafpad
-    oh-my-zsh
-  ];
+  environment = {
+    variables = {
+      EDITOR = "vim";
+    };
+    extraInit = ''
+      xset s off -dpms
+    '';
+    systemPackages = with pkgs; [
+
+      ((vim_configurable.override { }).customize {
+        name = "vim";
+        vimrcConfig.packages.myplugins = with pkgs.vimPlugins; {
+          start = [
+            vim-nix
+            vim-lastplace
+          ];
+          opt = [ ];
+        };
+        vimrcConfig.customRC = ''
+          filetype plugin indent on
+          set nocompatible
+          set backspace=indent,eol,start
+          syntax on
+          set smartindent         
+          set tabstop=2
+          set shiftwidth=4
+          set expandtab
+          set autoindent
+          set number
+        '';
+      })
+      vim
+      wget
+      git
+      google-chrome
+      vscode
+      dmenu
+      ghc
+      haskellPackages.xmobar
+      haskellPackages.haskell-language-server
+      haskellPackages.hlint
+      alacritty
+      telegram-desktop
+      screenfetch
+      zsh
+      i3lock-color
+      oh-my-zsh
+      rustup
+      gcc
+      openjdk
+      glibc
+      lldb
+      pavucontrol
+      nixpkgs-fmt
+      pciutils
+      usbutils
+      python3
+      xclip 
+      maim
+      discord
+    ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -105,16 +140,16 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-  programs.zsh = {
-    enable = true;
-    ohMyZsh = {
+  programs = {
+    zsh = {
       enable = true;
-      theme = "norm";
+      ohMyZsh = {
+        enable = true;
+        theme = "norm";
+      };
     };
   };
-
   # List services that you want to enable:
-
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
@@ -131,5 +166,16 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
-
+  security.rtkit.enable = true;
+  sound.enable = true;
+  # services.pipewire = {
+  #   enable = true;
+  #   alsa.enable = true;
+  #   alsa.support32Bit = true;
+  #   pulse.enable = true;
+  #   # If you want to use JACK applications, uncomment this
+  #   #jack.enable = true;
+  # };
+  services.blueman.enable = true;
+  services.picom.enable = true;
 }
