@@ -1,12 +1,15 @@
+import System.IO
 import XMonad
+import XMonad.Actions.SpawnOn
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
-import XMonad.Util.Run(spawnPipe)
-import XMonad.Util.EZConfig(additionalKeys)
-import System.IO
+import XMonad.Layout.PerWorkspace
+import XMonad.Util.EZConfig (additionalKeys)
+import XMonad.Util.Run (spawnPipe)
+import Text.XHtml (base)
 
 main :: IO ()
-main = xmonad =<< xmobar myConfig
+main = xmobar myConfig >>= xmonad
 
 myConfig =
   def
@@ -17,6 +20,8 @@ myConfig =
     , focusedBorderColor = myFocusedBorderColor
     , handleExtraArgs = myHandleExtraArgs
     , layoutHook = myLayout
+    , manageHook = manageSpawn <> manageHook def
+    , startupHook = myStartupHook
     }
     `additionalKeys` myKeys
 
@@ -54,7 +59,11 @@ defaultLayout = tiled ||| Mirror tiled ||| Full
 
 myLayout = onWorkspace "main" Full . onWorkspace "tg" Full $ defaultLayout
 
+myStartupHook = do
+  spawn wallpaper
+
 
 lockscreen = "i3lock-color -c 181818 -e -k --time-color=cfcfcf --layout-color=cfcfcf --date-color=cfcfcf --date-str=\"%A: %d/%m/%Y\" --keylayout 0 --radius 120"
 keyboardSwitch = "~/.config/xmonad/keyboard_switch.sh"
 screenshot = "maim -s | xclip -selection clipboard -t image/png"
+wallpaper = "feh --bg-fill /home/archgt/.background-image"
