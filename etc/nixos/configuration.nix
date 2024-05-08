@@ -15,10 +15,6 @@
   fonts.packages = with pkgs; [
     fira-code
     fira-code-symbols
-    nerdfonts
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
   ];
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "ru_RU.UTF-8";
@@ -31,26 +27,33 @@
     LC_TELEPHONE = "ru_RU.UTF-8";
     LC_TIME = "ru_RU.UTF-8";
   };
-  services.xserver = {
-    xkb = {
-      layout = "us,ru";
-      variant = "";
-      options = "grp:alt_shift_toggle";
-    };
-    enable = true;
-    windowManager = {
-      xmonad.enable = true;
-      xmonad.enableContribAndExtras = true;
-      xmonad.extraPackages = hpkgs: [
-        hpkgs.xmonad-contrib
-        hpkgs.xmonad-extras
-        hpkgs.xmonad
-      ];
-    };
-    desktopManager = {
-      xterm.enable = false;
+  services = {
+    xserver = {
+      xkb = {
+        layout = "us,ru";
+        variant = "";
+        options = "grp:alt_shift_toggle";
+      };
+      enable = true;
+      windowManager = {
+        xmonad.enable = true;
+        xmonad.enableContribAndExtras = true;
+        xmonad.extraPackages = hpkgs: [
+          hpkgs.xmonad-contrib
+          hpkgs.xmonad-extras
+          hpkgs.xmonad
+        ];
+      };
+      desktopManager = {
+        xterm.enable = false;
+        wallpaper = {
+          mode = "fill";
+          combineScreens = false;
+        };
+      };
     };
     displayManager = {
+      sddm.enable = true;
       defaultSession = "none+xmonad";
     };
   };
@@ -71,6 +74,7 @@
   };
   nixpkgs.config.allowUnfree = true;
   environment = {
+    pathsToLink = [ "/share/agda" ];
     variables = {
       EDITOR = "vim";
     };
@@ -78,7 +82,11 @@
       xset s off -dpms
     '';
     systemPackages = with pkgs; [
-
+      (pkgs.texlive.combine {
+        inherit (pkgs.texlive)
+          scheme-full
+          ;
+      })
       ((vim_configurable.override { }).customize {
         name = "vim";
         vimrcConfig.packages.myplugins = with pkgs.vimPlugins; {
@@ -101,6 +109,8 @@
           set number
         '';
       })
+      (agda.withPackages [ agdaPackages.standard-library ])
+      maven
       vim
       wget
       git
@@ -127,11 +137,13 @@
       pciutils
       usbutils
       python3
-      xclip 
+      xclip
       maim
       discord
     ];
   };
+
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -147,6 +159,11 @@
         enable = true;
         theme = "norm";
       };
+    };
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
   };
   # List services that you want to enable:
