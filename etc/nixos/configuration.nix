@@ -44,6 +44,9 @@
           hpkgs.xmonad
         ];
       };
+      displayManager = {
+        startx.enable = true;
+      };
       desktopManager = {
         xterm.enable = false;
         wallpaper = {
@@ -53,7 +56,6 @@
       };
     };
     displayManager = {
-      sddm.enable = true;
       defaultSession = "none+xmonad";
     };
   };
@@ -112,6 +114,7 @@
       (agda.withPackages [ agdaPackages.standard-library ])
       maven
       vim
+      feh
       wget
       git
       google-chrome
