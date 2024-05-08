@@ -81,7 +81,7 @@
       EDITOR = "vim";
     };
     extraInit = ''
-      xset s off -dpms
+      startx
     '';
     systemPackages = with pkgs; [
       (pkgs.texlive.combine {
