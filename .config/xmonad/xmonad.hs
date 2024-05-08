@@ -61,9 +61,12 @@ myLayout = onWorkspace "main" Full . onWorkspace "tg" Full $ defaultLayout
 
 myStartupHook = do
   spawn wallpaper
-
+  spawn noblackscreen
+  spawn cursor
 
 lockscreen = "i3lock-color -c 181818 -e -k --time-color=cfcfcf --layout-color=cfcfcf --date-color=cfcfcf --date-str=\"%A: %d/%m/%Y\" --keylayout 0 --radius 120"
 keyboardSwitch = "~/.config/xmonad/keyboard_switch.sh"
 screenshot = "maim -s | xclip -selection clipboard -t image/png"
 wallpaper = "feh --bg-fill /home/archgt/.background-image"
+noblackscreen = "xset s off -dpms"
+cursor = "xsetroot -cursor_name left_ptr"
