@@ -1,0 +1,66 @@
+Config
+    { font = "xft:Symbols Nerd Font:size=10,  Bitstream Vera Sans Mono:size=8:bold:antialias=true:hinting=true"
+    , borderColor = "black"
+    , border = TopB
+    , bgColor = "black"
+    , fgColor = "grey"
+    , position = TopP 0 40
+    , allDesktops = True
+    , pickBroadest = False
+    , commands =
+        [ Run XPropertyLog "_XMONAD_LOG_1"
+        , Run
+            Weather
+            "ULLI"
+            [ "-t"
+            , "<tempC>C"
+            , "-L"
+            , "18"
+            , "-H"
+            , "25"
+            , "-n"
+            , "green"
+            , "-h"
+            , "red"
+            , "-l"
+            , "lightblue"
+            ]
+            36000
+        , Run
+            Cpu
+            [ "-L"
+            , "3"
+            , "-H"
+            , "50"
+            , "-n"
+            , "green"
+            , "-h"
+            , "red"
+            ]
+            10
+        , Run
+            Memory
+            [ "-t"
+            , "Mem: <usedratio>%"
+            , "-L"
+            , "40"
+            , "-H"
+            , "80"
+            , "-n"
+            , "green"
+            , "-h"
+            , "red"
+            ]
+            10
+        , Run
+            Swap
+            []
+            10
+        , Run Date "%a %Y %b %_d %H:%M:%S" "date" 10
+        , Run StdinReader
+        -- , Run Com "/home/archgt/.config/xmonad/scripts/systraypad.sh" [] "traypad" 100
+        ]
+    , sepChar = "%"
+    , alignSep = "}{"
+    , template = "%StdinReader% | %cpu% | %memory%  }{ <fc=#8be9fd>%date%</fc> | %ULLI% "
+    }
