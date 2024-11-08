@@ -3,6 +3,7 @@
 {
   imports =
     [
+      ./nvidia.nix
       ./hardware-configuration.nix
     ];
   boot.loader.systemd-boot.enable = true;
@@ -81,7 +82,6 @@
       EDITOR = "vim";
     };
     extraInit = ''
-      startx
     '';
     systemPackages = with pkgs; [
       (pkgs.texlive.combine {
@@ -112,7 +112,6 @@
         '';
       })
       (agda.withPackages [ agdaPackages.standard-library ])
-      maven
       vim
       feh
       wget
@@ -121,6 +120,7 @@
       vscode
       dmenu
       ghc
+      haskellPackages.xmonad
       haskellPackages.xmobar
       haskellPackages.haskell-language-server
       haskellPackages.hlint
@@ -143,6 +143,7 @@
       xclip
       maim
       discord
+      trayer
     ];
   };
 
@@ -187,15 +188,6 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
   security.rtkit.enable = true;
-  sound.enable = true;
-  # services.pipewire = {
-  #   enable = true;
-  #   alsa.enable = true;
-  #   alsa.support32Bit = true;
-  #   pulse.enable = true;
-  #   # If you want to use JACK applications, uncomment this
-  #   #jack.enable = true;
-  # };
   services.blueman.enable = true;
   services.picom.enable = true;
 }
